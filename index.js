@@ -84,7 +84,6 @@ function move(gameState) {
   }
 
   // TODO: Step 2 - Prevent your Battlesnake from colliding with itself
-  // myBody = gameState.you.body;
   const myBody = gameState.you.body;
 
   const bodyMap = new Set(myBody.map(({ x, y }) => `${x},${y}`));
@@ -106,7 +105,7 @@ function move(gameState) {
   }
 
   // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
-  // opponents = gameState.board.snakes;
+  const opponents = gameState.board.snakes;
 
   // Are there any safe moves left?
   const safeMoves = Object.keys(isMoveSafe).filter((key) => isMoveSafe[key]);
@@ -119,7 +118,7 @@ function move(gameState) {
   const nextMove = safeMoves[Math.floor(Math.random() * safeMoves.length)];
 
   // TODO: Step 4 - Move towards food instead of random, to regain health and survive longer
-  // food = gameState.board.food;
+  const food = gameState.board.food;
 
   console.log(`MOVE ${gameState.turn}: ${nextMove}`);
   return { move: nextMove };
