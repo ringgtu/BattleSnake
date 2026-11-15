@@ -67,14 +67,14 @@ function move(gameState) {
   }
 
   // TODO: Step 1 - Prevent your Battlesnake from moving out of bounds
-  // boardWidth = gameState.board.width;
-  // boardHeight = gameState.board.height;
+  boardWidth = gameState.board.width;
+  boardHeight = gameState.board.height;
 
   // TODO: Step 2 - Prevent your Battlesnake from colliding with itself
-  // myBody = gameState.you.body;
+  myBody = gameState.you.body;
 
   // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
-  // opponents = gameState.board.snakes;
+  opponents = gameState.board.snakes;
 
   // Are there any safe moves left?
   const safeMoves = Object.keys(isMoveSafe).filter(key => isMoveSafe[key]);
@@ -87,7 +87,7 @@ function move(gameState) {
   const nextMove = safeMoves[Math.floor(Math.random() * safeMoves.length)];
 
   // TODO: Step 4 - Move towards food instead of random, to regain health and survive longer
-  // food = gameState.board.food;
+  food = gameState.board.food;
 
   console.log(`MOVE ${gameState.turn}: ${nextMove}`)
   return { move: nextMove };
