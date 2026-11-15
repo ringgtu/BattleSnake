@@ -79,7 +79,7 @@ function move(gameState) {
   if (myHead.y === 0) {
     isMoveSafe.down = false;
   }
-  if (myHead.y + 1 === boardHeight - 1) {
+  if (myHead.y === boardHeight - 1) {
     isMoveSafe.up = false;
   }
 
