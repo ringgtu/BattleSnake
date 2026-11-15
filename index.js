@@ -70,8 +70,6 @@ function move(gameState) {
   const boardWidth = gameState.board.width;
   const boardHeight = gameState.board.height;
 
-  console.log(myHead);
-
   if (myHead.x === 0) {
     isMoveSafe.left = false;
   }
@@ -87,6 +85,25 @@ function move(gameState) {
 
   // TODO: Step 2 - Prevent your Battlesnake from colliding with itself
   // myBody = gameState.you.body;
+  const myBody = gameState.you.body;
+
+  const bodyMap = new Set(myBody.map(({ x, y }) => `${x},${y}`));
+
+  const DIRECTIONS = {
+    right: [1, 0],
+    left: [-1, 0],
+    up: [0, 1],
+    down: [0, -1],
+  };
+
+  for (const [key, value] of Object.entries(DIRECTIONS)) {
+    const nx = myHead.x + value[0];
+    const ny = myHead.y + value[1];
+
+    if (bodyMap.has(`${nx},${ny}`)) {
+      isMoveSafe[key] = false;
+    }
+  }
 
   // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
   // opponents = gameState.board.snakes;
