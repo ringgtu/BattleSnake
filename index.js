@@ -67,14 +67,52 @@ function move(gameState) {
   }
 
   // TODO: Step 1 - Prevent your Battlesnake from moving out of bounds
-  boardWidth = gameState.board.width;
-  boardHeight = gameState.board.height;
+  const boardWidth = gameState.board.width;
+  const boardHeight = gameState.board.height;
+
+  if (myHead.x === 0) {
+    isMoveSafe.left = false;
+  }
+  if (myHead.x + 1 >= boardWidth) {
+    isMoveSafe.right = false;
+  }
+  if (myHead.y === 0) {
+    isMoveSafe.down = false;
+  }
+  if (myHead.y + 1 >= boardHeight) {
+    isMoveSafe.up = false;
+  }
 
   // TODO: Step 2 - Prevent your Battlesnake from colliding with itself
-  myBody = gameState.you.body;
+  const myBody = gameState.you.body;
+
+  let bodyMap = []
+
+  console.log(myBody)
+
+  for (let i = 0; i < myBody; i++) {
+    bodyMap.push(myBody[i].x, myBody[i].y)
+    console.log(bodyMap)
+  }
+
+    // if (myHead.x < myBody.x) { // If head is at left of body, don't move right
+    //   isMoveSafe.right = false;
+    // } 
+    
+    // if (myHead.x > myBody.x) { // If head is at right of body, don't move left
+    //   isMoveSafe.left = false;
+    // }
+    
+    // if (myHead.y < myBody.y) { // If head is below body, don't move up
+    //   isMoveSafe.up = false;
+    // }
+    
+    // if (myHead.y > myBody.y) { // If head is above body, don't move down
+    //   isMoveSafe.down = false;
+    // }
 
   // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
-  opponents = gameState.board.snakes;
+  const opponents = gameState.board.snakes;
 
   // Are there any safe moves left?
   const safeMoves = Object.keys(isMoveSafe).filter(key => isMoveSafe[key]);
@@ -87,7 +125,7 @@ function move(gameState) {
   const nextMove = safeMoves[Math.floor(Math.random() * safeMoves.length)];
 
   // TODO: Step 4 - Move towards food instead of random, to regain health and survive longer
-  food = gameState.board.food;
+  const food = gameState.board.food;
 
   console.log(`MOVE ${gameState.turn}: ${nextMove}`)
   return { move: nextMove };
