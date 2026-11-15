@@ -21,9 +21,9 @@ function info() {
   return {
     apiversion: "1",
     author: "Yam", // TODO: Your Battlesnake Username
-    color: "#888888", // TODO: Choose color
-    head: "default", // TODO: Choose head
-    tail: "default", // TODO: Choose tail
+    color: "#3388BB", // TODO: Choose color
+    head: "Scarf", // TODO: Choose head
+    tail: "Hook", // TODO: Choose tail
   };
 }
 
@@ -109,7 +109,7 @@ function move(gameState) {
   // TODO: Step 2.1 - Prevent your Battlesnake from walking to a dead end
 
   // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
-  // opponents = gameState.board.snakes;
+  const opponents = gameState.board.snakes;
 
   // Are there any safe moves left?
   const safeMoves = Object.keys(isMoveSafe).filter((key) => isMoveSafe[key]);
@@ -122,7 +122,25 @@ function move(gameState) {
   const nextMove = safeMoves[Math.floor(Math.random() * safeMoves.length)];
 
   // TODO: Step 4 - Move towards food instead of random, to regain health and survive longer
-  // food = gameState.board.food;
+  const foods = gameState.board.food;
+  const closeMove = safeMoves[0]
+
+  if(foods > 0) {
+    let closestFood = foods[0]
+    let shortestDistance = Math.abs(myHead.x - closestFood.x) - Math.abs(myHead.y - closestFood.y)
+    
+    for(const food in foods) {
+      const foodDistance = Math.abs(myHead.x - food.x) - Math.abs(myHead.y - food.y)
+
+      if(foodDistance < shortestDistance){
+        shortestDistance = foodDistance
+        closestFood = food
+        closeMove = move
+      }
+    }
+
+    return { move: closeMove}
+  }
 
   console.log(`MOVE ${gameState.turn}: ${nextMove}`);
   return { move: nextMove };
