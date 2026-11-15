@@ -22,8 +22,8 @@ function info() {
     apiversion: "1",
     author: "Yam", // TODO: Your Battlesnake Username
     color: "#3388BB", // TODO: Choose color
-    head: "Scarf", // TODO: Choose head
-    tail: "Hook", // TODO: Choose tail
+    head: "scarf", // TODO: Choose head
+    tail: "hook", // TODO: Choose tail
   };
 }
 
@@ -84,32 +84,68 @@ function move(gameState) {
   }
 
   //Step 2 - Prevent your Battlesnake from colliding with itself
-  const occupiedSquare = new Set();
+  const myBody = gameState.you.body;
 
-  for (const snakeBody of gameState.board.snakes) {
-    snakeBody.body.map(({ x, y }) => occupiedSquare.add(`${x},${y}`));
-  }
+  const bodyMap = new Set(myBody.map(({ x, y }) => `${x},${y}`));
 
-  const DIRECTIONS = {
+  const DIRECTIONS1 = {
     right: [1, 0],
     left: [-1, 0],
     up: [0, 1],
     down: [0, -1],
   };
 
-  for (const [key, value] of Object.entries(DIRECTIONS)) {
-    const nx = myHead.x + value[0];
-    const ny = myHead.y + value[1];
+  for (const [key, [dx, dy]] of Object.entries(DIRECTIONS1)) {
+    const nx = myHead.x + dx;
+    const ny = myHead.y + dy;
 
-    if (occupiedSquare.has(`${nx},${ny}`)) {
+    if (bodyMap.has(`${nx},${ny}`)) {
       isMoveSafe[key] = false;
     }
   }
+  console.log(isMoveSafe);
 
   // TODO: Step 2.1 - Prevent your Battlesnake from walking to a dead end
 
   // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
-  const opponents = gameState.board.snakes;
+  const occupiedSquare = new Set();
+
+  for (const snake of gameState.board.snakes) {
+    if (snake.name !== gameState.you.name) {
+      snake.body.map(({ x, y }) => occupiedSquare.add(`${x},${y}`));
+    }
+  }
+
+  const DIRECTIONS2 = {
+    "1,0": ["right"],
+    "2,0": ["right"],
+    "-1,0": ["left"],
+    "-2,0": ["left"],
+    "0,1": ["up"],
+    "0,2": ["up"],
+    "0,-1": ["down"],
+    "0,-2": ["down"],
+
+    "1,1": ["right", "up"],
+    "1,-1": ["right", "down"],
+    "-1,1": ["left", "up"],
+    "-1,-1": ["left", "down"],
+  };
+
+  for (const [key, value] of Object.entries(DIRECTIONS2)) {
+    const x = Number(key.split(",")[0]);
+    const y = Number(key.split(",")[1]);
+
+    const nx = myHead.x + x;
+    const ny = myHead.y + y;
+
+    if (occupiedSquare.has(`${nx},${ny}`)) {
+      for (const direction of value) {
+        isMoveSafe[direction] = false;
+      }
+    }
+  }
+
 
   // Are there any safe moves left?
   const safeMoves = Object.keys(isMoveSafe).filter((key) => isMoveSafe[key]);
