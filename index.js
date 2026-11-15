@@ -66,20 +66,20 @@ function move(gameState) {
     isMoveSafe.up = false;
   }
 
-  // TODO: Step 1 - Prevent your Battlesnake from moving out of bounds
+  //Step 1 - Prevent your Battlesnake from moving out of bounds
   const boardWidth = gameState.board.width;
   const boardHeight = gameState.board.height;
 
   if (myHead.x === 0) {
     isMoveSafe.left = false;
   }
-  if (myHead.x + 1 >= boardWidth) {
+  if (myHead.x === boardWidth - 1) {
     isMoveSafe.right = false;
   }
   if (myHead.y === 0) {
     isMoveSafe.down = false;
   }
-  if (myHead.y + 1 >= boardHeight) {
+  if (myHead.y + 1 === boardHeight - 1) {
     isMoveSafe.up = false;
   }
 
@@ -104,6 +104,8 @@ function move(gameState) {
     }
   }
   console.log(isMoveSafe);
+
+  // TODO: Step 2.1 - Prevent your Battlesnake from walking to a dead end
 
   // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
   const occupiedSquare = new Set();
@@ -144,7 +146,6 @@ function move(gameState) {
     }
   }
 
-
   // Are there any safe moves left?
   const safeMoves = Object.keys(isMoveSafe).filter((key) => isMoveSafe[key]);
   if (safeMoves.length == 0) {
@@ -152,29 +153,54 @@ function move(gameState) {
     return { move: "down" };
   }
 
-  // Choose a random move from the safe moves
-  const nextMove = safeMoves[Math.floor(Math.random() * safeMoves.length)];
-
   // TODO: Step 4 - Move towards food instead of random, to regain health and survive longer
+  function compareLocation(cord1, cord2) {
+    const dx = cord2.x - cord1.x;
+    const dy = cord2.y - cord1.y;
+
+    let direction = [];
+
+    if (dx > 0) {
+      direction.push("right");
+    } else if (dx < 0) {
+      direction.push("left");
+    }
+
+    if (dy > 0) {
+      direction.push("up");
+    } else if (dy < 0) {
+      direction.push("down");
+    }
+
+    return direction;
+  }
+
   const foods = gameState.board.food;
-  const closeMove = safeMoves[0]
 
-  if(foods > 0) {
-    let closestFood = foods[0]
-    let shortestDistance = Math.abs(myHead.x - closestFood.x) - Math.abs(myHead.y - closestFood.y)
-    
-    for(const food in foods) {
-      const foodDistance = Math.abs(myHead.x - food.x) - Math.abs(myHead.y - food.y)
+  if (foods.length > 0) {
+    let closestFood = foods[0];
+    let shortestDistance =
+      Math.abs(myHead.x - closestFood.x) + Math.abs(myHead.y - closestFood.y);
 
-      if(foodDistance < shortestDistance){
-        shortestDistance = foodDistance
-        closestFood = food
-        closeMove = move
+    for (const food in foods) {
+      const foodDistance =
+        Math.abs(myHead.x - food.x) + Math.abs(myHead.y - food.y);
+
+      if (foodDistance < shortestDistance) {
+        shortestDistance = foodDistance;
+        closestFood = food;
       }
     }
 
-    return { move: closeMove}
+    for (const move of compareLocation(myHead, closestFood)) {
+      if (safeMoves.includes(move)) {
+        return { move: move };
+      }
+    }
   }
+
+  // Choose a random move from the safe moves
+  const nextMove = safeMoves[Math.floor(Math.random() * safeMoves.length)];
 
   console.log(`MOVE ${gameState.turn}: ${nextMove}`);
   return { move: nextMove };
