@@ -66,7 +66,7 @@ function move(gameState) {
     isMoveSafe.up = false;
   }
 
-  // TODO: Step 1 - Prevent your Battlesnake from moving out of bounds
+  //Step 1 - Prevent your Battlesnake from moving out of bounds
   const boardWidth = gameState.board.width;
   const boardHeight = gameState.board.height;
 
@@ -83,11 +83,12 @@ function move(gameState) {
     isMoveSafe.up = false;
   }
 
-  // TODO: Step 2 - Prevent your Battlesnake from colliding with itself
-  // myBody = gameState.you.body;
-  const myBody = gameState.you.body;
+  //Step 2 - Prevent your Battlesnake from colliding with itself
+  const occupiedSquare = new Set();
 
-  const bodyMap = new Set(myBody.map(({ x, y }) => `${x},${y}`));
+  for (const snakeBody of gameState.board.snakes) {
+    snakeBody.body.map(({ x, y }) => occupiedSquare.add(`${x},${y}`));
+  }
 
   const DIRECTIONS = {
     right: [1, 0],
@@ -100,10 +101,12 @@ function move(gameState) {
     const nx = myHead.x + value[0];
     const ny = myHead.y + value[1];
 
-    if (bodyMap.has(`${nx},${ny}`)) {
+    if (occupiedSquare.has(`${nx},${ny}`)) {
       isMoveSafe[key] = false;
     }
   }
+
+  // TODO: Step 2.1 - Prevent your Battlesnake from walking to a dead end
 
   // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
   // opponents = gameState.board.snakes;
